@@ -6,6 +6,6 @@ When launched, an icon (temporarily a picture of Toad from Mario Bros.) will app
 
 Right clicking on the icon will give you various options.
 
-Capture Area: When pressed, click and hold the left mouse button anywhere on your desktop and drag to highlight the area that you want to capture.
+Capture Area: Click and hold the left mouse button anywhere on your desktop and drag to highlight the area that you want to capture.
 
 Exit: Close the application.
