@@ -8,61 +8,59 @@ using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Windows.Forms;
 
-
-namespace ShareShot {
+namespace ShareShot.src {
     class ImgurUpload {
-        private ImgurLogin login = new ImgurLogin();
-        // private Point point1;
-        // private Point point2;
+        private Imgur_Login login = new Imgur_Login();
+
+        private Point point1;
+        private Point point2;
         private String path;
-        private TrayWindow trayWindow;
+        TrayWindow trayWin;
 
-        public ImgurUpload(TrayWindow tw) {
-            // point1 = p1;
-            // point2 = p2;
-            trayWindow = tw;
-            // Take_Screenshot();
+        public ImgurUpload(Point p1, Point p2, TrayWindow tw) {
+            point1 = p1;
+            point2 = p2;
+            trayWin = tw;
+            Take_Screenshot();
         }
-
-        public void Take_Screenshot(Point point1, Point point2) {
-            // Create a rectangle based on the two points
+        
+        private void Take_Screenshot() {
             var rect = new Rectangle(Math.Min(point1.X, point2.X),
                                      Math.Min(point1.Y, point2.Y),
                                      Math.Abs(point2.X - point1.X),
                                      Math.Abs(point2.Y - point1.Y));
-            // Create a bitmap using the rectangles width and height
             Bitmap bmp = new Bitmap(rect.Width, rect.Height, PixelFormat.Format32bppArgb);
-
-            // Copy the screen selection and save it to the appdata folder
             Graphics g = Graphics.FromImage(bmp);
             g.CopyFromScreen(rect.Left, rect.Top, 0, 0, bmp.Size, CopyPixelOperation.SourceCopy);
-            path = Path.Combine(Environment.ExpandEnvironmentVariables("%appdata%\\ShareShot\\"), DateTime.Now.ToString("MM-dd-yyyy h-mm-ss-tt") + ".png");
+            path = Path.Combine(Environment.ExpandEnvironmentVariables(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)), DateTime.Now.ToString("MM-dd-yyyy h-mm-ss-tt") + ".png");
             bmp.Save(path, ImageFormat.Png);
-
-            // Upload the screenshot to Imgur
             Upload_ScreenshotAsync();
         }
 
         private async void Upload_ScreenshotAsync() {
-            // Get the access token
-            string accessToken = login.GetToken();
+            string access_token = login.GetToken();
 
-            // Convert the screenshot to a string for upload
             string image = Convert.ToBase64String(File.ReadAllBytes(path));
+            //using (HttpClient client = new HttpClient()) {
+            //    Dictionary<string, string> data = new Dictionary<string, string>() {
+            //        {"image", image }
+            //    };
+            //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", access_token);
+            //    var content = new FormUrlEncodedContent(data);
+            //    var response = await client.PostAsync("https://api.imgur.com/3/upload", content);
+            //    var responseString = await response.Content.ReadAsStringAsync();
 
-            // Upload the screenshot using the imgur api upload url, await the response and use it to return the url to the Notify Icon in TrayWindow.cs
-            using (HttpClient client = new HttpClient()) {
-                Dictionary<string, string> data = new Dictionary<string, string>() {
-                    {"image", image }
-                };
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-                var content = new FormUrlEncodedContent(data);
-                var response = await client.PostAsync("https://api.imgur.com/3/upload", content);
-                var responseString = await response.Content.ReadAsStringAsync();
-                dynamic responseObjet = JsonConvert.DeserializeObject(responseString);
-                string url = responseObjet.data.link;
-                trayWindow.ShowBalloon(30000, "Screenshot Successfully Uploaded:\n", url, ToolTipIcon.Info);
-            }
+            //    dynamic responseObjet = JsonConvert.DeserializeObject(responseString);
+            //    string url = responseObjet.data.link;
+            //   trayWin.ShowBalloon(30000, "Screenshot Successfully Uploaded:\n", url, ToolTipIcon.Info);
+            //}
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", access_token);
+            var response = await client.PostAsync("https://api.imgur.com/3/image", new StringContent(image));
+            var responseString = await response.Content.ReadAsStringAsync();
+            dynamic responseObjet = JsonConvert.DeserializeObject(responseString);
+            string url = responseObjet.data.link;
+            trayWin.ShowBalloon(30000, "Screenshot Successfully Uploaded:\n", url, ToolTipIcon.Info);
         }
     }
 }

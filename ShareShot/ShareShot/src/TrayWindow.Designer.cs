@@ -1,4 +1,4 @@
-﻿namespace ShareShot {
+﻿namespace ShareShot.src {
     partial class TrayWindow {
         /// <summary>
         /// Required designer variable.
@@ -31,7 +31,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Name = "TrayWindow";
-            this.Text = "Form1";
+            this.Text = "TrayWindow";
             this.Load += new System.EventHandler(this.TrayWindow_Load);
             this.ResumeLayout(false);
 
@@ -40,4 +40,3 @@
         #endregion
     }
 }
-

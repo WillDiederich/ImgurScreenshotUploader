@@ -10,9 +10,9 @@ using OpenQA.Selenium.Support.UI;
 using System;
 
 namespace ShareShot {
-    class ImgurLogin {
+    class Imgur_Login {
 
-        public ImgurLogin() {
+        public Imgur_Login() {
 
         }
 
@@ -22,10 +22,9 @@ namespace ShareShot {
             // Create a parser to read the auth.ini file
             var parser = new FileIniDataParser();
             try {
-                authData = parser.ReadFile(Environment.ExpandEnvironmentVariables(Environment.ExpandEnvironmentVariables("%appdata%\\ShareShot\\auth.ini")));
+                authData = parser.ReadFile(Environment.ExpandEnvironmentVariables(Environment.ExpandEnvironmentVariables("auth.ini")));
                 clientId = authData["credentials"]["client_id"];
-            }
-            catch (ParsingException) {
+            }catch (ParsingException) {
                 Console.WriteLine("Error: File not found.");
                 return null;
             }
@@ -62,7 +61,7 @@ namespace ShareShot {
             string refreshToken = System.Web.HttpUtility.ParseQueryString(queryString).Get("refresh_token");
 
             authData["credentials"]["refresh_token"] = refreshToken;
-            parser.WriteFile(Environment.ExpandEnvironmentVariables("%appdata%\\ShareShot\\auth.ini"), authData);
+            parser.WriteFile(Environment.ExpandEnvironmentVariables("auth.ini"), authData);
 
             return accessToken;
         }
@@ -70,7 +69,7 @@ namespace ShareShot {
         public string GetToken() {
             // Create a parser to read the auth.ini file
             var parser = new FileIniDataParser();
-            IniData authData = parser.ReadFile(Environment.ExpandEnvironmentVariables("%appdata%\\ShareShot\\auth.ini"));
+            IniData authData = parser.ReadFile(Environment.ExpandEnvironmentVariables("auth.ini"));
             string clientId = authData["credentials"]["client_id"];
             string clientSecret = authData["credentials"]["client_secret"];
             string refreshToken = authData["credentials"]["refresh_token"];
