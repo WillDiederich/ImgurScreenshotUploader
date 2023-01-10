@@ -9,3 +9,5 @@ Right clicking on the icon will give you various options.
 Capture Area: Click and hold the left mouse button anywhere on your desktop and drag to highlight the area that you want to capture.
 
 Exit: Close the application.
+
+Note: I'm currently rebuilding this application from scratch.
